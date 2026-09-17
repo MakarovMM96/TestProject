@@ -1,0 +1,540 @@
+[
+  {
+    "id": "crystal_shard_beetle",
+    "name": "Осколочный жук",
+    "tribe": "crystal",
+    "tier": 1,
+    "attack": 1,
+    "health": 3,
+    "row": "front",
+    "keywords": { "shell": 2 },
+    "effects": []
+  },
+  {
+    "id": "crystal_facet_carver",
+    "name": "Резчик граней",
+    "tribe": "crystal",
+    "tier": 2,
+    "attack": 2,
+    "health": 4,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "aura", "action": "grantKeyword", "target": "neighbors", "params": { "keyword": "shell", "value": 1 } }
+    ]
+  },
+  {
+    "id": "crystal_quartz_warden",
+    "name": "Кварцевый страж",
+    "tribe": "crystal",
+    "tier": 3,
+    "attack": 3,
+    "health": 6,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onShellBroken", "action": "buffStats", "target": "alliesOfTribe", "params": { "tribe": "crystal", "health": 2, "duration": "combat" } }
+    ]
+  },
+  {
+    "id": "crystal_druse_mother",
+    "name": "Друза-мать",
+    "tribe": "crystal",
+    "tier": 4,
+    "attack": 2,
+    "health": 8,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onRecruitEnd", "action": "buffStats", "target": "alliesOfTribeOnRunedSlots", "params": { "tribe": "crystal", "attack": 2, "health": 2, "permanent": 1 } }
+    ]
+  },
+  {
+    "id": "crystal_prism_colossus",
+    "name": "Призменный колосс",
+    "tribe": "crystal",
+    "tier": 5,
+    "attack": 6,
+    "health": 10,
+    "row": "front",
+    "keywords": { "shell": 6 },
+    "effects": [
+      { "trigger": "onDeath", "action": "summon", "target": "ownSlot", "params": { "creature": "crystal_shard_beetle", "count": 2 } }
+    ]
+  },
+  {
+    "id": "crystal_geode_heart",
+    "name": "Сердце Жеоды",
+    "tribe": "crystal",
+    "tier": 6,
+    "attack": 5,
+    "health": 12,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "aura", "action": "multiplyKeyword", "target": "alliesOfTribe", "params": { "tribe": "crystal", "keyword": "shell", "multiplier": 2 } }
+    ]
+  },
+  {
+    "id": "swamp_bog_tadpole",
+    "name": "Болотный головастик",
+    "tribe": "swamp",
+    "tier": 1,
+    "attack": 2,
+    "health": 1,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onDeath", "action": "summon", "target": "ownSlot", "params": { "creature": "swamp_slime_token", "count": 1 } }
+    ]
+  },
+  {
+    "id": "swamp_silt_broodmother",
+    "name": "Тинная матка",
+    "tribe": "swamp",
+    "tier": 2,
+    "attack": 1,
+    "health": 4,
+    "row": "back",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onCombatStart", "action": "summon", "target": "frontRowFreeSlot", "params": { "creature": "swamp_slime_token", "count": 1 } }
+    ]
+  },
+  {
+    "id": "swamp_rotmouth",
+    "name": "Гнилоуст",
+    "tribe": "swamp",
+    "tier": 3,
+    "attack": 3,
+    "health": 3,
+    "row": "front",
+    "keywords": { "toxin": true },
+    "effects": [],
+    "awaken": {
+      "after": 2,
+      "effects": [
+        { "trigger": "onCombatStart", "action": "grantKeyword", "target": "self", "params": { "keyword": "toxin", "value": 1, "charges": 2 } }
+      ]
+    }
+  },
+  {
+    "id": "swamp_marsh_queen",
+    "name": "Королева трясины",
+    "tribe": "swamp",
+    "tier": 4,
+    "attack": 4,
+    "health": 5,
+    "row": "back",
+    "keywords": {},
+    "effects": [
+      { "trigger": "aura", "action": "buffStats", "target": "alliesWithDefId", "params": { "defId": "swamp_slime_token", "attack": 2, "health": 2 } }
+    ]
+  },
+  {
+    "id": "swamp_methane_bubble",
+    "name": "Метановый пузырь",
+    "tribe": "swamp",
+    "tier": 5,
+    "attack": 0,
+    "health": 7,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onDeath", "action": "dealDamage", "target": "enemyFrontRow", "params": { "amount": 3 } }
+    ]
+  },
+  {
+    "id": "swamp_ancient_bogling",
+    "name": "Древний Топлец",
+    "tribe": "swamp",
+    "tier": 6,
+    "attack": 7,
+    "health": 9,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onDeath", "action": "summonLastDead", "target": "ownSide", "params": { "tribe": "swamp", "count": 2, "health": 1 } }
+    ]
+  },
+  {
+    "id": "spark_probe",
+    "name": "Искровой зонд",
+    "tribe": "spark",
+    "tier": 1,
+    "attack": 1,
+    "health": 2,
+    "row": "back",
+    "keywords": { "ranged": true },
+    "effects": []
+  },
+  {
+    "id": "spark_coilman",
+    "name": "Катушечник",
+    "tribe": "spark",
+    "tier": 2,
+    "attack": 2,
+    "health": 3,
+    "row": "back",
+    "keywords": { "ranged": true, "charge": 2 },
+    "effects": [
+      { "trigger": "onAttack", "condition": { "everyNth": 2 }, "action": "buffStats", "target": "self", "params": { "attack": 1, "duration": "combat" } }
+    ]
+  },
+  {
+    "id": "spark_discharge_generator",
+    "name": "Генератор разряда",
+    "tribe": "spark",
+    "tier": 3,
+    "attack": 0,
+    "health": 5,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onAllyAttack", "condition": { "row": "back" }, "action": "dealDamage", "target": "randomEnemy", "params": { "amount": 1, "requiresKeyword": "ranged" } }
+    ]
+  },
+  {
+    "id": "spark_lightning_prophet",
+    "name": "Молниевый пророк",
+    "tribe": "spark",
+    "tier": 4,
+    "attack": 3,
+    "health": 4,
+    "row": "back",
+    "keywords": { "ranged": true, "breach": true },
+    "effects": []
+  },
+  {
+    "id": "spark_storm_condenser",
+    "name": "Конденсатор бури",
+    "tribe": "spark",
+    "tier": 5,
+    "attack": 4,
+    "health": 6,
+    "row": "back",
+    "keywords": { "ranged": true, "charge": 3 },
+    "effects": [
+      { "trigger": "onAttack", "condition": { "everyNth": 3 }, "action": "dealDamage", "target": "enemyBackRow", "params": { "amount": 4 } }
+    ]
+  },
+  {
+    "id": "spark_current_architect",
+    "name": "Архитектор тока",
+    "tribe": "spark",
+    "tier": 6,
+    "attack": 5,
+    "health": 7,
+    "row": "back",
+    "keywords": { "ranged": true },
+    "effects": [
+      { "trigger": "aura", "action": "reduceChargeThreshold", "target": "alliesOfTribe", "params": { "tribe": "spark", "reduce": 1, "min": 1 } }
+    ]
+  },
+  {
+    "id": "ash_smoldering_imp",
+    "name": "Тлеющий бес",
+    "tribe": "ash",
+    "tier": 1,
+    "attack": 3,
+    "health": 1,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onSell", "action": "buffNextBuy", "target": "player", "params": { "attack": 1, "health": 1 } }
+    ]
+  },
+  {
+    "id": "ash_torchbearer",
+    "name": "Факельщик",
+    "tribe": "ash",
+    "tier": 2,
+    "attack": 2,
+    "health": 2,
+    "row": "front",
+    "keywords": { "rush": true },
+    "effects": [
+      { "trigger": "onDeath", "action": "dealDamage", "target": "randomEnemy", "params": { "amount": 2 } }
+    ]
+  },
+  {
+    "id": "ash_priestess",
+    "name": "Пепельная жрица",
+    "tribe": "ash",
+    "tier": 3,
+    "attack": 2,
+    "health": 4,
+    "row": "back",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onSell", "action": "buffStats", "target": "alliesOfTribe", "params": { "tribe": "ash", "attack": 1, "permanent": 1, "scope": "playerBoard" } }
+    ]
+  },
+  {
+    "id": "ash_crucible",
+    "name": "Горнило",
+    "tribe": "ash",
+    "tier": 4,
+    "attack": 4,
+    "health": 4,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onPlay", "action": "consumeAllyForStats", "target": "randomOtherAlly", "params": {} }
+    ]
+  },
+  {
+    "id": "ash_ember_phoenix",
+    "name": "Уголёк-феникс",
+    "tribe": "ash",
+    "tier": 5,
+    "attack": 5,
+    "health": 3,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onDeath", "action": "reviveSelf", "target": "self", "params": { "health": 1, "oncePerCombat": 1 } }
+    ]
+  },
+  {
+    "id": "ash_ashlord",
+    "name": "Владыка пепла",
+    "tribe": "ash",
+    "tier": 6,
+    "attack": 8,
+    "health": 6,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onAllyDeath", "action": "dealDamageEqualToDeadAttack", "target": "randomEnemy", "params": {} }
+    ]
+  },
+  {
+    "id": "night_shade_moth",
+    "name": "Теневая моль",
+    "tribe": "night",
+    "tier": 1,
+    "attack": 2,
+    "health": 2,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onCombatStart", "condition": { "phase": "night" }, "action": "grantKeyword", "target": "self", "params": { "keyword": "stealth", "value": 1 } }
+    ]
+  },
+  {
+    "id": "night_dreamspinner",
+    "name": "Прядильщица снов",
+    "tribe": "night",
+    "tier": 2,
+    "attack": 1,
+    "health": 3,
+    "row": "back",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onRecruitEnd", "action": "buffRandomAllyOfTribe", "target": "randomAllyOfTribe", "params": { "tribe": "night", "attack": 1, "health": 1, "nightAttack": 2, "nightHealth": 2, "permanent": 1 } }
+    ]
+  },
+  {
+    "id": "night_mirror_spider",
+    "name": "Паук-двойник",
+    "tribe": "night",
+    "tier": 3,
+    "attack": 3,
+    "health": 2,
+    "row": "front",
+    "keywords": { "stealth": true },
+    "effects": [
+      { "trigger": "onAttack", "condition": { "everyNth": 1, "firstOnly": true }, "action": "copyTargetAttackIfHigher", "target": "currentTarget", "params": {} }
+    ]
+  },
+  {
+    "id": "night_moon_weaver",
+    "name": "Лунная ткачиха",
+    "tribe": "night",
+    "tier": 4,
+    "attack": 3,
+    "health": 5,
+    "row": "back",
+    "keywords": { "ranged": true },
+    "effects": [
+      { "trigger": "aura", "condition": { "phase": "night" }, "action": "buffStats", "target": "alliesOfTribe", "params": { "tribe": "night", "attack": 2 } }
+    ]
+  },
+  {
+    "id": "night_shadow_puppeteer",
+    "name": "Кукловод теней",
+    "tribe": "night",
+    "tier": 5,
+    "attack": 4,
+    "health": 6,
+    "row": "back",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onCombatStart", "action": "swapStats", "target": "randomEnemy", "params": {} }
+    ]
+  },
+  {
+    "id": "night_moonless_queen",
+    "name": "Королева Безлунья",
+    "tribe": "night",
+    "tier": 6,
+    "attack": 6,
+    "health": 8,
+    "row": "front",
+    "keywords": { "stealth": true },
+    "effects": [
+      { "trigger": "aura", "action": "forcePhase", "target": "self", "params": { "phase": "night" } }
+    ]
+  },
+  {
+    "id": "grove_songful_hedgehog",
+    "name": "Певчий ёж",
+    "tribe": "grove",
+    "tier": 1,
+    "attack": 1,
+    "health": 2,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "aura", "action": "buffStats", "target": "neighbors", "params": { "attack": 1 } }
+    ]
+  },
+  {
+    "id": "grove_rootdancer",
+    "name": "Корнепляс",
+    "tribe": "grove",
+    "tier": 2,
+    "attack": 2,
+    "health": 3,
+    "row": "front",
+    "keywords": {},
+    "effects": [],
+    "awaken": {
+      "after": 2,
+      "effects": [
+        { "trigger": "onRecruitEnd", "action": "buffStats", "target": "neighbors", "params": { "health": 1, "permanent": 1 } }
+      ]
+    }
+  },
+  {
+    "id": "grove_moss_elk",
+    "name": "Мшистый лось",
+    "tribe": "grove",
+    "tier": 3,
+    "attack": 4,
+    "health": 4,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onCombatStart", "condition": { "phase": "day" }, "action": "buffStats", "target": "self", "params": { "attack": 2, "health": 2, "duration": "combat" } }
+    ]
+  },
+  {
+    "id": "grove_firefly_ring",
+    "name": "Хоровод светлячков",
+    "tribe": "grove",
+    "tier": 4,
+    "attack": 2,
+    "health": 4,
+    "row": "back",
+    "keywords": {},
+    "effects": [
+      { "trigger": "aura", "action": "extendLinkAcrossRows", "target": "self", "params": {} }
+    ]
+  },
+  {
+    "id": "grove_elder_oak",
+    "name": "Старейшина-дуб",
+    "tribe": "grove",
+    "tier": 5,
+    "attack": 3,
+    "health": 10,
+    "row": "front",
+    "keywords": {},
+    "effects": [],
+    "awaken": {
+      "after": 3,
+      "effects": [
+        { "trigger": "onRecruitEnd", "action": "buffStats", "target": "alliesOfTribe", "params": { "tribe": "grove", "attack": 3, "health": 3, "permanent": 1, "once": 1 } }
+      ]
+    }
+  },
+  {
+    "id": "grove_voice_of_the_grove",
+    "name": "Голос Рощи",
+    "tribe": "grove",
+    "tier": 6,
+    "attack": 6,
+    "health": 6,
+    "row": "front",
+    "keywords": {},
+    "effects": [
+      { "trigger": "aura", "action": "multiplyLinkEffects", "target": "self", "params": { "multiplier": 2 } }
+    ]
+  },
+  {
+    "id": "neutral_wandering_merchant",
+    "name": "Бродячий торговец",
+    "tribe": "neutral",
+    "tier": 1,
+    "attack": 1,
+    "health": 1,
+    "row": "any",
+    "keywords": {},
+    "effects": [
+      { "trigger": "onPlay", "action": "gainShards", "target": "player", "params": { "amount": 1 } }
+    ]
+  },
+  {
+    "id": "neutral_cartographer",
+    "name": "Картограф",
+    "tribe": "neutral",
+    "tier": 2,
+    "attack": 2,
+    "health": 2,
+    "row": "any",
+    "keywords": {},
+    "effects": [
+      { "trigger": "aura", "action": "increaseShopSize", "target": "player", "params": { "amount": 1 } }
+    ]
+  },
+  {
+    "id": "neutral_rune_apprentice",
+    "name": "Рунный подмастерье",
+    "tribe": "neutral",
+    "tier": 3,
+    "attack": 2,
+    "health": 5,
+    "row": "back",
+    "keywords": {},
+    "effects": [
+      { "trigger": "aura", "action": "boostNeighborRunes", "target": "neighborRunes", "params": { "multiplier": 1.5 } }
+    ]
+  },
+  {
+    "id": "neutral_starkeeper",
+    "name": "Хранитель звезды",
+    "tribe": "neutral",
+    "tier": 5,
+    "attack": 5,
+    "health": 5,
+    "row": "front",
+    "keywords": { "breach": true },
+    "effects": [
+      { "trigger": "onDeath", "action": "grantKeyword", "target": "randomAlly", "params": { "keyword": "shell", "value": 3 } }
+    ]
+  },
+  {
+    "id": "swamp_slime_token",
+    "name": "Слизень",
+    "tribe": "swamp",
+    "tier": 1,
+    "attack": 1,
+    "health": 1,
+    "row": "front",
+    "keywords": {},
+    "effects": [],
+    "token": true
+  }
+]

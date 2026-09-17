@@ -1,0 +1,14 @@
+{
+  "name": "arena-shards",
+  "private": true,
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "pnpm --filter @arena-shards/core test",
+    "dev": "pnpm --filter @arena-shards/client dev",
+    "build": "pnpm --filter @arena-shards/core build && pnpm --filter @arena-shards/client build",
+    "cap:sync": "pnpm --filter @arena-shards/client cap:sync"
+  }
+}

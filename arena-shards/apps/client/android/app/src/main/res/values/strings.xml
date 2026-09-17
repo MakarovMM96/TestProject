@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Арена Осколков</string>
+    <string name="title_activity_main">Арена Осколков</string>
+    <string name="package_name">com.arenashards.app</string>
+    <string name="custom_url_scheme">com.arenashards.app</string>
+</resources>

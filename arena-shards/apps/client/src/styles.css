@@ -1,0 +1,516 @@
+:root {
+  --bg: #0f0b1e;
+  --bg-card: #1b1530;
+  --bg-card-alt: #221a3d;
+  --border: #362a5c;
+  --text: #f1ecff;
+  --text-dim: #a99fcf;
+  --accent: #e8c15a;
+  --accent-dim: #7a6a2f;
+  --danger: #e0556b;
+  --good: #6fd68a;
+
+  --tribe-crystal: #5ad0e8;
+  --tribe-swamp: #7bc95a;
+  --tribe-spark: #f0d94a;
+  --tribe-ash: #f0784a;
+  --tribe-night: #a374f2;
+  --tribe-grove: #5ee89a;
+  --tribe-neutral: #b8b0d6;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.screen {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: env(safe-area-inset-top, 12px) 16px calc(env(safe-area-inset-bottom, 12px) + 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 100vh;
+}
+
+.app-header h1 {
+  margin: 8px 0 4px;
+  font-size: 1.6rem;
+  background: linear-gradient(135deg, var(--accent), var(--tribe-crystal));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.card h2 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hint {
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  margin: 6px 0 0;
+}
+
+.primary-button {
+  border: none;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), #f2a44a);
+  color: #241a06;
+  cursor: pointer;
+}
+
+.primary-button:active {
+  transform: scale(0.98);
+}
+
+.secondary-button {
+  border: 1px solid var(--border);
+  background: var(--bg-card-alt);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.secondary-button:disabled {
+  opacity: 0.4;
+}
+
+.secondary-button-active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.chip-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  border: 1px solid var(--border);
+  background: var(--bg-card-alt);
+  color: var(--text);
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.chip-active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.difficulty-list,
+.hero-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.difficulty-card,
+.hero-card {
+  text-align: left;
+  border: 1px solid var(--border);
+  background: var(--bg-card-alt);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.difficulty-active,
+.hero-active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent) inset;
+}
+
+.difficulty-name,
+.hero-name {
+  font-weight: 700;
+}
+
+.difficulty-tagline {
+  color: var(--accent);
+  font-size: 0.78rem;
+}
+
+.difficulty-desc,
+.hero-desc {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.hero-armor {
+  color: var(--text-dim);
+  font-size: 0.78rem;
+}
+
+.start-button {
+  position: sticky;
+  bottom: 8px;
+}
+
+/* Results */
+.results-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.results-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--bg-card-alt);
+}
+
+.results-row-human {
+  border: 1px solid var(--accent);
+}
+
+.results-place {
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 28px;
+}
+
+.results-name {
+  flex: 1;
+}
+
+.results-tag {
+  color: var(--text-dim);
+  font-size: 0.78rem;
+}
+
+/* Match screen */
+.match-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-card);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  position: sticky;
+  top: 8px;
+  z-index: 5;
+}
+
+.match-phase {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.match-timer {
+  font-weight: 700;
+  color: var(--good);
+}
+
+.match-timer-urgent {
+  color: var(--danger);
+}
+
+.last-result-banner {
+  background: var(--bg-card-alt);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+}
+
+.stat-bar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+}
+
+.stat {
+  background: var(--bg-card-alt);
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.opponents-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.opponent-chip {
+  flex: 0 0 auto;
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 68px;
+  font-size: 0.75rem;
+}
+
+.opponent-dead {
+  opacity: 0.5;
+}
+
+.opponent-name {
+  font-weight: 700;
+}
+
+.opponent-diff {
+  color: var(--text-dim);
+}
+
+.contract-offers {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.contract-offer {
+  text-align: left;
+  border: 1px solid var(--border);
+  background: var(--bg-card-alt);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.contract-active {
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+
+.shop-row,
+.hand-row,
+.rune-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.shop-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.row-label {
+  margin: 0 0 4px;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.board-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.board-cell {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.rune-badge {
+  font-size: 0.65rem;
+  color: var(--accent);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.sell-button {
+  margin-top: 8px;
+  width: 100%;
+}
+
+.rune-card {
+  flex: 0 0 150px;
+  text-align: left;
+  border: 1px solid var(--border);
+  background: var(--bg-card-alt);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.rune-selected {
+  border-color: var(--accent);
+}
+
+.rune-name {
+  display: block;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.rune-desc {
+  display: block;
+  color: var(--text-dim);
+  font-size: 0.72rem;
+}
+
+.hero-power-card .secondary-button {
+  width: 100%;
+}
+
+.ready-button {
+  position: sticky;
+  bottom: 8px;
+}
+
+/* Creature card */
+.creature-card {
+  flex: 0 0 96px;
+  min-height: 74px;
+  border-radius: 10px;
+  border: 2px solid var(--tribe-neutral);
+  background: var(--bg-card-alt);
+  color: var(--text);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.creature-card.slot-empty {
+  border-style: dashed;
+  border-color: var(--border);
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  min-height: 74px;
+}
+
+.creature-small {
+  flex-basis: 78px;
+  min-height: 60px;
+}
+
+.creature-selected {
+  outline: 3px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.creature-ascended {
+  box-shadow: 0 0 10px 1px var(--accent);
+}
+
+.creature-name {
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.creature-stats {
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.creature-keywords {
+  font-size: 0.62rem;
+  color: var(--text-dim);
+}
+
+.creature-awakened {
+  font-size: 0.6rem;
+  color: var(--accent);
+}
+
+.tribe-crystal {
+  border-color: var(--tribe-crystal);
+}
+.tribe-swamp {
+  border-color: var(--tribe-swamp);
+}
+.tribe-spark {
+  border-color: var(--tribe-spark);
+}
+.tribe-ash {
+  border-color: var(--tribe-ash);
+}
+.tribe-night {
+  border-color: var(--tribe-night);
+}
+.tribe-grove {
+  border-color: var(--tribe-grove);
+}
+.tribe-neutral {
+  border-color: var(--tribe-neutral);
+}
+
+@media (min-width: 600px) {
+  .board-row {
+    justify-content: center;
+  }
+  .creature-card {
+    flex: 0 0 110px;
+  }
+}

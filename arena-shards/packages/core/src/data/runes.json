@@ -1,0 +1,83 @@
+[
+  {
+    "id": "resilience",
+    "name": "Стойкость",
+    "description": "Увеличивает здоровье существа на клетке.",
+    "ranks": [
+      { "health": 3 },
+      { "health": 6 },
+      { "health": 10 }
+    ]
+  },
+  {
+    "id": "blade",
+    "name": "Клинок",
+    "description": "Увеличивает атаку существа на клетке.",
+    "ranks": [
+      { "attack": 2 },
+      { "attack": 4 },
+      { "attack": 7 }
+    ]
+  },
+  {
+    "id": "aegis",
+    "name": "Панциря",
+    "description": "Даёт Панцирь существу на клетке.",
+    "ranks": [
+      { "shell": 2 },
+      { "shell": 4 },
+      { "shell": 7 }
+    ]
+  },
+  {
+    "id": "echo",
+    "name": "Эха",
+    "description": "Усиливает срабатывание Откликов.",
+    "ranks": [
+      {},
+      { "echoDoubleFirst": true },
+      { "echoDoubleAll": true }
+    ]
+  },
+  {
+    "id": "breach",
+    "name": "Прорыва",
+    "description": "Даёт Прорыв и бонус к характеристикам.",
+    "ranks": [
+      { "keywords": { "breach": true } },
+      { "keywords": { "breach": true }, "attack": 1, "health": 1 },
+      { "keywords": { "breach": true }, "attack": 3, "health": 3 }
+    ]
+  },
+  {
+    "id": "ambush",
+    "name": "Засады",
+    "description": "Даёт Скрытность (и позже Стрелка); только задний ряд.",
+    "backRowOnly": true,
+    "ranks": [
+      { "keywords": { "stealth": true } },
+      { "keywords": { "stealth": true }, "attack": 2 },
+      { "keywords": { "stealth": true, "ranged": true } }
+    ]
+  },
+  {
+    "id": "growth",
+    "name": "Роста",
+    "description": "Навсегда усиливает существо в конце хода найма.",
+    "ranks": [
+      { "permanentGrowth": { "attack": 1, "health": 1 } },
+      { "permanentGrowth": { "attack": 2, "health": 2 } },
+      { "permanentGrowth": { "attack": 3, "health": 3 } }
+    ]
+  },
+  {
+    "id": "onslaught",
+    "name": "Натиска",
+    "description": "Даёт Натиск и бонусы атаки.",
+    "ranks": [
+      { "keywords": { "rush": true } },
+      { "keywords": { "rush": true }, "attack": 1 },
+      { "keywords": { "rush": true }, "onslaughtDoubleFirstRound": true }
+    ]
+  }
+]

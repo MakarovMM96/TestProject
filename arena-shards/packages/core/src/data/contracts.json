@@ -1,0 +1,49 @@
+[
+  {
+    "id": "clean_win",
+    "name": "Чистая победа",
+    "condition": "winCombatWithoutLoss",
+    "durationTurns": 3,
+    "reward": "chooseRuneRank2"
+  },
+  {
+    "id": "collector",
+    "name": "Коллекционер",
+    "condition": "haveFourOfSameTribeOnBoard",
+    "durationTurns": 3,
+    "reward": "freeCreatureNextTier"
+  },
+  {
+    "id": "blacksmith",
+    "name": "Кузнец",
+    "condition": "placeTwoRunes",
+    "durationTurns": 3,
+    "reward": "gainShards",
+    "rewardParams": { "amount": 5 }
+  },
+  {
+    "id": "trader",
+    "name": "Торговец",
+    "condition": "sellSixCreatures",
+    "durationTurns": 3,
+    "reward": "gainGoldNextTurn",
+    "rewardParams": { "amount": 3 }
+  },
+  {
+    "id": "night_hunt",
+    "name": "Ночная охота",
+    "condition": "winTwoCombatsInARowAtNight",
+    "durationTurns": 3,
+    "reward": "buffTribesPermanent",
+    "rewardParams": { "tribes": "night,ash", "attack": 2, "health": 2 }
+  },
+  {
+    "id": "survive_at_all_costs",
+    "name": "Выжить любой ценой",
+    "condition": "loseLessThanHealthInThreeTurns",
+    "params": { "maxHealthLost": 8 },
+    "durationTurns": 3,
+    "reward": "gainArmor",
+    "rewardParams": { "amount": 5 }
+  }
+]

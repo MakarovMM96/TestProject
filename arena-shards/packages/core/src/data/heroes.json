@@ -1,0 +1,72 @@
+[
+  {
+    "id": "irvena_runecarver",
+    "name": "Ирвена, Резчица рун",
+    "armor": 5,
+    "description": "Руны на вашем столе стоят на 1 Осколок меньше",
+    "power": { "kind": "passive", "action": "cheaperRunes", "params": { "amount": 1 } }
+  },
+  {
+    "id": "grokh_bog_father",
+    "name": "Грох, Болотный отец",
+    "armor": 8,
+    "description": "Призовите Слизня 1/1 в руку",
+    "power": { "kind": "active", "cost": 2, "action": "summonSlimeToHand", "params": {} }
+  },
+  {
+    "id": "saila_spark",
+    "name": "Сайла Искра",
+    "armor": 6,
+    "description": "Дайте существу заднего ряда Стрелка до конца следующего боя",
+    "power": { "kind": "active", "cost": 1, "action": "grantRangedTemp", "params": {} }
+  },
+  {
+    "id": "morten_ashen",
+    "name": "Мортен Пепельный",
+    "armor": 4,
+    "description": "Продайте существо за 3 золота вместо 1 (раз за ход)",
+    "power": { "kind": "passive", "action": "sellForMoreOncePerTurn", "params": { "amount": 3 } }
+  },
+  {
+    "id": "nokta_night_weaver",
+    "name": "Нокта, Ткачиха ночи",
+    "armor": 7,
+    "description": "Ночные эффекты действуют и в Сумерки",
+    "power": { "kind": "passive", "action": "nightEffectsInDusk", "params": {} }
+  },
+  {
+    "id": "eldr_rootspeak",
+    "name": "Эльдр Корнеслов",
+    "armor": 6,
+    "description": "Дайте существу +1 к счётчику Пробуждения",
+    "power": { "kind": "active", "cost": 2, "action": "addAwakenCounter", "params": { "amount": 1 } }
+  },
+  {
+    "id": "tarvis_cartographer",
+    "name": "Тарвис Картограф",
+    "armor": 8,
+    "description": "Посмотрите 3 существа следующего уровня таверны и купите одно за 4 золота",
+    "power": { "kind": "active", "cost": 1, "action": "peekNextTierBuy", "params": { "count": 3, "buyCost": 4 } }
+  },
+  {
+    "id": "velma_two_rows",
+    "name": "Вельма Двух Рядов",
+    "armor": 5,
+    "description": "Поменяйте местами передний и задний ряды соперника перед боем (раз за 3 хода)",
+    "power": { "kind": "active", "cost": 3, "action": "swapOpponentRows", "params": { "cooldownTurns": 3 } }
+  },
+  {
+    "id": "cassius_stargazer",
+    "name": "Кассий Звездочёт",
+    "armor": 10,
+    "description": "На ходах 4, 8, 12 выбирайте из 4 контрактов вместо 3 и получайте +2 Осколка за выполнение",
+    "power": { "kind": "passive", "action": "extraContractChoice", "params": { "extraOptions": 1, "bonusShards": 2 } }
+  },
+  {
+    "id": "bastian_smith",
+    "name": "Бастиан Кузнец",
+    "armor": 7,
+    "description": "Получите 1 Осколок",
+    "power": { "kind": "active", "cost": 2, "action": "gainShards", "params": { "amount": 1 } }
+  }
+]
