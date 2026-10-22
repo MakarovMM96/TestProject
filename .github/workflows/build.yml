@@ -94,6 +94,8 @@ jobs:
           $fixture = Join-Path $PWD 'tests\Sai2Recovery.Tests\Fixtures\multi_tile_rgb.sai2'
           $app = Start-Process $exe -ArgumentList "`"$fixture`"" -PassThru
           Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes
+          # Windows PowerShell reads the script as ANSI, so keep it ASCII: "исправен" as code points
+          $needle = -join [char[]](0x438,0x441,0x43F,0x440,0x430,0x432,0x435,0x43D)
           $texts = @()
           for ($i = 0; $i -lt 40; $i++) {
             Start-Sleep -Milliseconds 500
@@ -103,12 +105,12 @@ jobs:
             $root = [System.Windows.Automation.AutomationElement]::FromHandle($app.MainWindowHandle)
             $all = $root.FindAll([System.Windows.Automation.TreeScope]::Descendants, [System.Windows.Automation.Condition]::TrueCondition)
             $texts = @($all | ForEach-Object { $_.Current.Name } | Where-Object { $_ })
-            if ($texts -match 'исправен') { break }
+            if ($texts -match $needle) { break }
           }
           Write-Host "Window: $($app.MainWindowTitle)"
           Write-Host ("UI texts: " + (($texts | Select-Object -Unique | Select-Object -First 40) -join ' | '))
-          if (-not ($texts -match 'исправен')) { throw ("GUI did not show the analysis result. Window='" + $app.MainWindowTitle + "' texts=" + (($texts | Select-Object -Unique | Select-Object -First 30) -join ' | ')) }
-          Write-Host "::notice::GUI OK — $($app.MainWindowTitle); status: $(($texts -match 'исправен') | Select-Object -First 1)"
+          if (-not ($texts -match $needle)) { throw ("GUI did not show the analysis result. Window='" + $app.MainWindowTitle + "' texts=" + (($texts | Select-Object -Unique | Select-Object -First 30) -join ' | ')) }
+          Write-Host "::notice::GUI OK - $($app.MainWindowTitle); status: $(($texts -match $needle) | Select-Object -First 1)"
           $app.Kill()
           Start-Sleep 1
           $u = Start-Process (Join-Path $dir 'unins000.exe') -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES' -Wait -PassThru
