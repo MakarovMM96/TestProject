@@ -1,0 +1,93 @@
+name: Build installer
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Unit tests
+        run: dotnet test tests/Sai2Recovery.Tests/Sai2Recovery.Tests.csproj -c Release --logger "console;verbosity=normal"
+
+  windows:
+    needs: test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Version
+        id: ver
+        shell: pwsh
+        run: |
+          if ("${{ github.ref_type }}" -eq "tag") { $v = "${{ github.ref_name }}".TrimStart('v') }
+          else { $v = "1.0.${{ github.run_number }}" }
+          "version=$v" >> $env:GITHUB_OUTPUT
+
+      - name: Publish GUI
+        run: >
+          dotnet publish src/Sai2Recovery.App/Sai2Recovery.App.csproj -c Release -r win-x64
+          --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true -p:DebugType=none -p:Version=${{ steps.ver.outputs.version }}
+          -o publish/app
+
+      - name: Publish CLI
+        run: >
+          dotnet publish src/Sai2Recovery.Cli/Sai2Recovery.Cli.csproj -c Release -r win-x64
+          --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=true
+          -p:EnableCompressionInSingleFile=true -p:DebugType=none -p:Version=${{ steps.ver.outputs.version }}
+          -o publish/cli
+
+      - name: Smoke test CLI on fixtures
+        shell: pwsh
+        run: |
+          ./publish/cli/sai2fix.exe analyze tests/Sai2Recovery.Tests/Fixtures/small_rgba.sai2
+          if ($LASTEXITCODE -ne 0) { throw "sai2fix failed" }
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { choco install innosetup -y --no-progress }
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          & $iscc "/DAppVersion=${{ steps.ver.outputs.version }}" "/DPublishDir=..\publish" installer\Sai2Recovery.iss
+          if ($LASTEXITCODE -ne 0) { throw "ISCC failed" }
+
+      - name: Portable zip
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Compress-Archive -Path publish/app/SAI2Recovery.exe, publish/cli/sai2fix.exe, README.md -DestinationPath "dist/SAI2Recovery-portable-${{ steps.ver.outputs.version }}.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SAI2Recovery-${{ steps.ver.outputs.version }}
+          path: dist/*
+
+      - name: Release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*

@@ -1,0 +1,11 @@
+bin/
+obj/
+publish/
+dist/
+*.user
+.vs/
+TestResults/
+tools/crosscheck/libsai/
+tools/crosscheck/crosscheck
+tools/crosscheck/sai2_ref.cpp
+tests/Sai2Recovery.Tests/Fixtures/*.bgra

@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Sai2Recovery.Core/Sai2Recovery.Core.csproj" />
+    <Project Path="src/Sai2Recovery.App/Sai2Recovery.App.csproj" />
+    <Project Path="src/Sai2Recovery.Cli/Sai2Recovery.Cli.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Sai2Recovery.Tests/Sai2Recovery.Tests.csproj" />
+  </Folder>
+</Solution>
