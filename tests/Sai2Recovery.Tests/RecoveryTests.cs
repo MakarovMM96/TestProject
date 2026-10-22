@@ -36,7 +36,7 @@ public class RecoveryTests
         var file = TestFiles.Fixture(name);
         var a = Sai2Analyzer.Analyze(file);
         Assert.Equal(Verdict.Healthy, a.Verdict);
-        Assert.Empty(a.Issues.Where(i => i.Severity >= Severity.Warning));
+        Assert.DoesNotContain(a.Issues, i => i.Severity >= Severity.Warning);
         var r = Sai2Repairer.Repair(a);
         Assert.Equal(file, r.Output);
     }
