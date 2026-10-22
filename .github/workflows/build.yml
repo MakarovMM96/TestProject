@@ -79,6 +79,7 @@ jobs:
         shell: powershell
         run: |
           $ErrorActionPreference = 'Stop'
+          trap { Write-Host "::error::Smoke test: $($_.Exception.Message) [at line $($_.InvocationInfo.ScriptLineNumber)]"; exit 1 }
           $setup = Get-ChildItem dist\SAI2Recovery-Setup-*.exe | Select-Object -First 1
           $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/CURRENTUSER','/TASKS="contextmenu"' -Wait -PassThru
           if ($p.ExitCode -ne 0) { throw "Setup exit code $($p.ExitCode)" }
@@ -88,7 +89,7 @@ jobs:
           if (-not (Test-Path (Join-Path $dir 'sai2fix.exe'))) { throw 'sai2fix.exe missing' }
           $key = 'HKCU:\Software\Classes\SystemFileAssociations\.sai2\shell\SAI2Recovery\command'
           $cmd = (Get-ItemProperty $key).'(default)'
-          Write-Host "Context menu: $cmd"
+          Write-Host "::notice::Installed to $dir; context menu: $cmd"
 
           $fixture = Join-Path $PWD 'tests\Sai2Recovery.Tests\Fixtures\multi_tile_rgb.sai2'
           $app = Start-Process $exe -ArgumentList "`"$fixture`"" -PassThru
@@ -106,7 +107,7 @@ jobs:
           }
           Write-Host "Window: $($app.MainWindowTitle)"
           Write-Host ("UI texts: " + (($texts | Select-Object -Unique | Select-Object -First 40) -join ' | '))
-          if (-not ($texts -match 'исправен')) { throw 'GUI did not show the analysis result' }
+          if (-not ($texts -match 'исправен')) { throw ("GUI did not show the analysis result. Window='" + $app.MainWindowTitle + "' texts=" + (($texts | Select-Object -Unique | Select-Object -First 30) -join ' | ')) }
           Write-Host "::notice::GUI OK — $($app.MainWindowTitle); status: $(($texts -match 'исправен') | Select-Object -First 1)"
           $app.Kill()
           Start-Sleep 1
