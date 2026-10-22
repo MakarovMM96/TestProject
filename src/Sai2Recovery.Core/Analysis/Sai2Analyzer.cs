@@ -480,14 +480,18 @@ public static class Sai2Analyzer
     private static void CheckDimensionsAgainstComposite(Sai2Analysis a, byte[] d)
     {
         var intg = a.Composite;
-        if (intg?.Pixels == null || intg.Health == ChunkHealth.Lost) return;
-        if (intg.Pixels.IsHealthy) return;
-        // The composite does not fit the header size: maybe the size is what got damaged.
-        int ch = a.Header.PreviewChannels;
-        var r = DimensionInference.FromDense(intg.Bytes(d), intg.ExactLength, [ch, 7 - ch]);
+        if (intg?.Pixels == null || intg.Health == ChunkHealth.Lost || a.Header.Width == 0) return;
+        var blob = intg.Bytes(d);
+        int ch = intg.Pixels.Channels;
+        // A slightly wrong width can still decode "cleanly" because zero runs may run past the
+        // row end. An encoder never writes such runs, so check the size strictly.
+        if (intg.Pixels.IsHealthy && DimensionInference.IsStrictlyConsistent(blob, a.Header.Width, a.Header.Height, ch)) return;
+        var r = DimensionInference.FromDense(blob, intg.ExactLength, [ch, 7 - ch]);
         if (r == null || (r.Width == a.Header.Width && r.Height == a.Header.Height)) return;
-        var test = PixelStream.Parse(intg.Bytes(d), (int)r.Width, (int)r.Height, intg.ExactLength,
-            (int)(Sai2Format.TilesFor(r.Width) * Sai2Format.TilesFor(r.Height)), [r.Channels]);
+        // Only overrule a header that decodes cleanly when the evidence is unambiguous.
+        if (intg.Pixels.IsHealthy && !r.Strict) return;
+        var test = PixelStream.Parse(blob, (int)r.Width, (int)r.Height, intg.ExactLength,
+            Sai2Format.TilesFor(r.Width) * Sai2Format.TilesFor(r.Height), [r.Channels]);
         if (!test.IsHealthy) return;
         a.Add(Severity.Error, $"Размер холста в заголовке ({a.Header.Width}×{a.Header.Height}) не совпадает с данными; верный размер — {r.Width}×{r.Height}.");
         a.Header.Width = r.Width;

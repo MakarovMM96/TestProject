@@ -16,7 +16,8 @@ namespace Sai2Recovery.Core.Analysis;
 /// </summary>
 public static class DimensionInference
 {
-    public sealed record Result(uint Width, uint Height, int Channels, int TilesX, int TilesY);
+    /// <param name="Strict">Found without allowing zero runs past the row end (unambiguous).</param>
+    public sealed record Result(uint Width, uint Height, int Channels, int TilesX, int TilesY, bool Strict);
 
     public static Result? FromDense(ReadOnlySpan<byte> blob, bool exactEnd, int[] channelCandidates, uint hintWidth = 0, uint hintHeight = 0)
     {
@@ -63,6 +64,31 @@ public static class DimensionInference
         return offsets;
     }
 
+    /// <summary>
+    /// True if the last-column and last-row tiles decode exactly, without zero runs
+    /// past the row end, at the given size. Cheap check of the header size.
+    /// </summary>
+    public static bool IsStrictlyConsistent(ReadOnlySpan<byte> blob, uint width, uint height, int channels)
+    {
+        if (!PixelStream.HasDpcmTag(blob)) return false;
+        int tx = Sai2Format.TilesFor(width), ty = Sai2Format.TilesFor(height);
+        int k = tx * ty;
+        var offsets = WalkDense(blob, k, tx, ty, false);
+        if (offsets == null) return false;
+        int lastW = (int)width - (tx - 1) * 256, lastH = (int)height - (ty - 1) * 256;
+        for (int y = 0; y < ty; y++)
+        {
+            int rows = DpcmCodec.MeasureRows(Tile(blob, offsets, y * tx + tx - 1), lastW, channels, true);
+            if (rows != (y == ty - 1 ? lastH : 256)) return false;
+        }
+        for (int x = 0; x < tx - 1; x++)
+        {
+            int rows = DpcmCodec.MeasureRows(Tile(blob, offsets, (ty - 1) * tx + x), 256, channels, true);
+            if (rows != lastH) return false;
+        }
+        return true;
+    }
+
     private static ReadOnlySpan<byte> Tile(ReadOnlySpan<byte> blob, long[] offsets, int i) =>
         blob.Slice((int)offsets[i], (int)Sai2Format.ReadU32(blob, 4 + 4L * i));
 
@@ -95,7 +121,9 @@ public static class DimensionInference
                 }
                 if (widths.Count == 0) continue;
 
-                var pick = widths[0];
+                // Strict: normally a single candidate. Lenient: narrower widths can hide inside
+                // a trailing zero run, wider ones cannot, so the widest fit is the real one.
+                var pick = strict ? widths[0] : widths[^1];
                 foreach (var c in widths)
                     if (hintW > 0 && (uint)((tx - 1) * 256 + c.tw) == hintW) pick = c;
                 uint width = (uint)((tx - 1) * 256 + pick.tw);
@@ -110,7 +138,7 @@ public static class DimensionInference
                 }
                 if (!rowOk) continue;
                 uint height = (uint)((ty - 1) * 256 + th);
-                return new Result(width, height, ch, tx, ty);
+                return new Result(width, height, ch, tx, ty, strict);
             }
         }
         return null;
