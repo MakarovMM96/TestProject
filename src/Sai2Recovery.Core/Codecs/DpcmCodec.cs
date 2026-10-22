@@ -22,7 +22,8 @@ public static class DpcmCodec
     /// Decodes one row's delta stream. Returns consumed bytes (row streams are
     /// byte aligned), or -1 if the stream is invalid.
     /// </summary>
-    internal static int UnpackRow(ReadOnlySpan<byte> src, Span<short> deltas, int pixelCount, int channels)
+    /// <param name="strict">Reject zero runs that overshoot the row end (an encoder never emits them).</param>
+    internal static int UnpackRow(ReadOnlySpan<byte> src, Span<short> deltas, int pixelCount, int channels, bool strict = false)
     {
         deltas[..(pixelCount * 4)].Clear();
         int pos = 0;
@@ -75,6 +76,7 @@ public static class DpcmCodec
                     remainingBits -= 7;
                     mask >>= 7;
                     if (remainingBits < 0) return -1;
+                    if (strict && count + zeros > pixelCount) return -1;
                     for (int i = 0; i < zeros && count + i < pixelCount; i++) deltas[(count + i) * 4 + ch] = 0;
                     count += zeros;
                 }
@@ -164,14 +166,14 @@ public static class DpcmCodec
     /// Counts how many rows of the given width a tile holds, by decoding until the
     /// stream is consumed exactly. Returns -1 if no row count fits.
     /// </summary>
-    public static int MeasureRows(ReadOnlySpan<byte> tile, int width, int channels)
+    public static int MeasureRows(ReadOnlySpan<byte> tile, int width, int channels, bool strict = false)
     {
         if (tile.Length < 3) return -1;
         Span<short> deltas = stackalloc short[MaxTileSide * 4];
         int pos = 2;
         for (int row = 0; row < MaxTileSide; row++)
         {
-            int used = UnpackRow(tile[pos..], deltas, width, channels);
+            int used = UnpackRow(tile[pos..], deltas, width, channels, strict);
             if (used <= 0) return -1;
             pos += used;
             if (pos == tile.Length) return row + 1;

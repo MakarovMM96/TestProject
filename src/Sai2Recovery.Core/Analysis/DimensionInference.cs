@@ -63,52 +63,55 @@ public static class DimensionInference
         return offsets;
     }
 
+    private static ReadOnlySpan<byte> Tile(ReadOnlySpan<byte> blob, long[] offsets, int i) =>
+        blob.Slice((int)offsets[i], (int)Sai2Format.ReadU32(blob, 4 + 4L * i));
+
+    /// <summary>
+    /// Finds the last-column width and last-row height. A candidate must make every
+    /// tile of that column/row consume its bytes exactly. Strict mode (no zero run
+    /// past the row end) is tried first: it removes the ambiguity of empty margins.
+    /// </summary>
     private static Result? ExactSize(ReadOnlySpan<byte> blob, long[] offsets, int k, int tx, int ty, int[] channels, uint hintW, uint hintH)
     {
         foreach (int ch in channels)
         {
-            // Width from the last column of the first tile row.
-            int iLast = tx - 1;
-            var lastTile = blob.Slice((int)offsets[iLast], (int)Sai2Format.ReadU32(blob, 4 + 4L * iLast));
-            var widthCandidates = new List<(int tw, int rows)>();
-            for (int tw = 1; tw <= 256; tw++)
+            foreach (bool strict in new[] { true, false })
             {
-                int rows = DpcmCodec.MeasureRows(lastTile, tw, ch);
-                if (rows < 1) continue;
-                if (ty > 1 && rows != 256) continue;
-                widthCandidates.Add((tw, rows));
-            }
-            if (widthCandidates.Count == 0) continue;
+                // Width: rows of the last-column tiles must be 256 except in the last tile row.
+                var widths = new List<(int tw, int lastRows)>();
+                for (int tw = 1; tw <= 256; tw++)
+                {
+                    int rows0 = DpcmCodec.MeasureRows(Tile(blob, offsets, tx - 1), tw, ch, strict);
+                    if (rows0 < 1 || (ty > 1 && rows0 != 256)) continue;
+                    int lastRows = rows0;
+                    bool ok = true;
+                    for (int y = 1; y < ty && ok; y++)
+                    {
+                        int rows = DpcmCodec.MeasureRows(Tile(blob, offsets, y * tx + tx - 1), tw, ch, strict);
+                        if (rows < 1 || (y < ty - 1 && rows != 256)) ok = false;
+                        lastRows = rows;
+                    }
+                    if (ok) widths.Add((tw, lastRows));
+                }
+                if (widths.Count == 0) continue;
 
-            var pick = widthCandidates[0];
-            if (hintW > 0)
-            {
-                foreach (var c in widthCandidates)
-                    if ((uint)((tx - 1) * 256 + c.tw) == hintW) pick = c;
-            }
-            else if (widthCandidates.Count > 1)
-            {
-                // Prefer the widest exact fit that decodes the full tile.
-                pick = widthCandidates[^1];
-            }
-            uint width = (uint)((tx - 1) * 256 + pick.tw);
+                var pick = widths[0];
+                foreach (var c in widths)
+                    if (hintW > 0 && (uint)((tx - 1) * 256 + c.tw) == hintW) pick = c;
+                uint width = (uint)((tx - 1) * 256 + pick.tw);
 
-            uint height;
-            if (ty == 1)
-            {
-                height = (uint)pick.rows;
+                // Height: every tile of the last row must agree on the row count.
+                int th = pick.lastRows;
+                bool rowOk = true;
+                for (int x = 0; x < tx - 1 && rowOk; x++)
+                {
+                    int rows = DpcmCodec.MeasureRows(Tile(blob, offsets, (ty - 1) * tx + x), 256, ch, strict);
+                    if (rows != th) rowOk = false;
+                }
+                if (!rowOk) continue;
+                uint height = (uint)((ty - 1) * 256 + th);
+                return new Result(width, height, ch, tx, ty);
             }
-            else
-            {
-                int iRow = (ty - 1) * tx;
-                var rowTile = blob.Slice((int)offsets[iRow], (int)Sai2Format.ReadU32(blob, 4 + 4L * iRow));
-                int tw0 = tx > 1 ? 256 : pick.tw;
-                int rows = DpcmCodec.MeasureRows(rowTile, tw0, ch);
-                if (rows < 1) continue;
-                height = (uint)((ty - 1) * 256 + rows);
-            }
-            if (hintH > 0 && ty == 1 && widthCandidates.Any(c => c.tw == pick.tw && (uint)c.rows == hintH)) height = hintH;
-            return new Result(width, height, ch, tx, ty);
         }
         return null;
     }
