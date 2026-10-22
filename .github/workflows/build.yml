@@ -75,6 +75,45 @@ jobs:
           & $iscc "/DAppVersion=${{ steps.ver.outputs.version }}" "/DPublishDir=..\publish" installer\Sai2Recovery.iss
           if ($LASTEXITCODE -ne 0) { throw "ISCC failed" }
 
+      - name: Install, launch and uninstall (smoke test)
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $setup = Get-ChildItem dist\SAI2Recovery-Setup-*.exe | Select-Object -First 1
+          $p = Start-Process $setup.FullName -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/CURRENTUSER','/TASKS="contextmenu"' -Wait -PassThru
+          if ($p.ExitCode -ne 0) { throw "Setup exit code $($p.ExitCode)" }
+          $dir = Join-Path $env:LOCALAPPDATA 'Programs\SAI2 Recovery'
+          $exe = Join-Path $dir 'SAI2Recovery.exe'
+          if (-not (Test-Path $exe)) { throw "Not installed: $exe" }
+          if (-not (Test-Path (Join-Path $dir 'sai2fix.exe'))) { throw 'sai2fix.exe missing' }
+          $key = 'HKCU:\Software\Classes\SystemFileAssociations\.sai2\shell\SAI2Recovery\command'
+          $cmd = (Get-ItemProperty $key).'(default)'
+          Write-Host "Context menu: $cmd"
+
+          $fixture = Join-Path $PWD 'tests\Sai2Recovery.Tests\Fixtures\multi_tile_rgb.sai2'
+          $app = Start-Process $exe -ArgumentList "`"$fixture`"" -PassThru
+          Add-Type -AssemblyName UIAutomationClient, UIAutomationTypes
+          $texts = @()
+          for ($i = 0; $i -lt 40; $i++) {
+            Start-Sleep -Milliseconds 500
+            if ($app.HasExited) { throw "GUI exited with code $($app.ExitCode)" }
+            $app.Refresh()
+            if ($app.MainWindowHandle -eq 0) { continue }
+            $root = [System.Windows.Automation.AutomationElement]::FromHandle($app.MainWindowHandle)
+            $all = $root.FindAll([System.Windows.Automation.TreeScope]::Descendants, [System.Windows.Automation.Condition]::TrueCondition)
+            $texts = @($all | ForEach-Object { $_.Current.Name } | Where-Object { $_ })
+            if ($texts -match 'исправен') { break }
+          }
+          Write-Host "Window: $($app.MainWindowTitle)"
+          Write-Host ("UI texts: " + (($texts | Select-Object -Unique | Select-Object -First 40) -join ' | '))
+          if (-not ($texts -match 'исправен')) { throw 'GUI did not show the analysis result' }
+          Write-Host "::notice::GUI OK — $($app.MainWindowTitle); status: $(($texts -match 'исправен') | Select-Object -First 1)"
+          $app.Kill()
+          Start-Sleep 1
+          $u = Start-Process (Join-Path $dir 'unins000.exe') -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES' -Wait -PassThru
+          Start-Sleep 3
+          if (Test-Path $exe) { throw 'Uninstall left the program behind' }
+
       - name: Portable zip
         shell: pwsh
         run: |
